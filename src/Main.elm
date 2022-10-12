@@ -1,9 +1,9 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, input, label, span, text)
+import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (checked, class, classList, placeholder, type_, value)
-import Html.Events exposing (onCheck, onClick, onInput)
+import Html.Events exposing (onCheck, onClick, onInput, onSubmit)
 import Random
 
 
@@ -46,7 +46,8 @@ init () =
 
 
 type Msg
-    = SetNewTodoText String
+    = NoOp
+    | SetNewTodoText String
     | SetNewTodoId Id
     | AddNewTodo
     | ToggleTodo Id Bool
@@ -62,6 +63,9 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
         SetNewTodoText newTodoText ->
             ( { model | newTodoText = newTodoText }, Cmd.none )
 
@@ -211,7 +215,10 @@ view model =
     div [ class "min-h-screen bg-black text-white p-3" ]
         [ div
             [ class "container mx-auto" ]
-            [ div [ class "flex max-w-xl md:w-2/3 mx-auto mb-3" ]
+            [ form
+                [ class "flex max-w-xl md:w-2/3 mx-auto mb-3"
+                , onSubmit AddNewTodo
+                ]
                 [ input
                     [ class "grow py-2 px-3 bg-gray-800 rounded"
                     , onInput SetNewTodoText
@@ -219,7 +226,7 @@ view model =
                     , placeholder "Todo text"
                     ]
                     []
-                , div [ class "w-1/4 flex" ] [ viewButton AddNewTodo "Add" ]
+                , div [ class "w-1/4 flex" ] [ viewButton NoOp "Add" ]
                 ]
             , div [ class "flex gap-2 justify-center" ]
                 [ viewFilter model.filter FilterAll "All"
