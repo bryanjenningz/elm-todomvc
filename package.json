@@ -1,0 +1,9 @@
+{
+  "name": "elm-todomvc",
+  "scripts": {
+    "dev": "elm-watch hot"
+  },
+  "devDependencies": {
+    "elm-watch": "^1.0.2"
+  }
+}
