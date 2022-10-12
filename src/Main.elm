@@ -213,7 +213,7 @@ view model =
             [ class "container mx-auto" ]
             [ div [ class "flex max-w-xl md:w-2/3 mx-auto mb-3" ]
                 [ input
-                    [ class "grow p-1 px-2 bg-gray-800 rounded"
+                    [ class "grow py-2 px-3 bg-gray-800 rounded"
                     , onInput SetNewTodoText
                     , value model.newTodoText
                     , placeholder "Todo text"
