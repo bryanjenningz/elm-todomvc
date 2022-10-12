@@ -213,7 +213,7 @@ view model =
             [ class "container mx-auto" ]
             [ div [ class "flex w-full md:w-2/3 mx-auto mb-3" ]
                 [ input
-                    [ class "text-black px-2 grow"
+                    [ class "grow p-1 px-2 bg-gray-800 rounded"
                     , onInput SetNewTodoText
                     , value model.newTodoText
                     , placeholder "Todo text"
@@ -292,7 +292,7 @@ viewTodo maybeEditTodo todo =
             if editTodo.id == todo.id then
                 div [ class "p-2 border-2 flex gap-2 items-center" ]
                     [ input
-                        [ class "grow p-1 px-2 text-black"
+                        [ class "grow p-1 px-2 bg-gray-800 rounded"
                         , value editTodo.text
                         , onInput SetEditingTodoText
                         ]
