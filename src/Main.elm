@@ -279,7 +279,7 @@ viewTodo : Maybe Todo -> Todo -> Html Msg
 viewTodo maybeEditTodo todo =
     let
         notEditingTodo =
-            div [ class "px-3 py-2 flex gap-3 items-center bg-gray-800" ]
+            div [ class "px-3 py-2 flex gap-3 items-center bg-gray-800 break-all" ]
                 [ input
                     [ type_ "checkbox"
                     , checked todo.isComplete
