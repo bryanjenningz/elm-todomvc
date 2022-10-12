@@ -1,9 +1,10 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Browser
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (checked, class, classList, placeholder, type_, value)
 import Html.Events exposing (onCheck, onClick, onInput, onSubmit)
+import Json.Decode as Json exposing (Decoder)
 import Random
 
 
@@ -27,18 +28,33 @@ type alias Todo =
     }
 
 
+decodeTodo : Decoder Todo
+decodeTodo =
+    Json.map3 Todo
+        (Json.field "id" Json.int)
+        (Json.field "text" Json.string)
+        (Json.field "isComplete" Json.bool)
+
+
 type Filter
     = FilterAll
     | FilterIncomplete
     | FilterComplete
 
 
-init : () -> ( Model, Cmd Msg )
-init () =
+init : Json.Value -> ( Model, Cmd Msg )
+init jsonValue =
+    let
+        todos : List Todo
+        todos =
+            Json.decodeValue Json.string jsonValue
+                |> Result.andThen (Json.decodeString (Json.list decodeTodo))
+                |> Result.withDefault []
+    in
     ( { newTodoText = ""
       , newTodoId = Nothing
       , editingTodo = Nothing
-      , todos = []
+      , todos = todos
       , filter = FilterAll
       }
     , generateNewTodoId
@@ -85,27 +101,39 @@ update msg model =
                             , text = model.newTodoText
                             , isComplete = False
                             }
+
+                        newTodos : List Todo
+                        newTodos =
+                            model.todos ++ [ newTodo ]
                     in
                     ( { model
-                        | todos = model.todos ++ [ newTodo ]
+                        | todos = newTodos
                         , newTodoText = ""
                         , newTodoId = Nothing
                       }
-                    , generateNewTodoId
+                    , Cmd.batch
+                        [ generateNewTodoId
+                        , saveTodos newTodos
+                        ]
                     )
 
         ToggleTodo todoId isComplete ->
-            ( { model
-                | todos =
+            let
+                newTodos : List Todo
+                newTodos =
                     updateTodo todoId
                         (\todo -> { todo | isComplete = isComplete })
                         model.todos
-              }
-            , Cmd.none
-            )
+            in
+            ( { model | todos = newTodos }, saveTodos newTodos )
 
         RemoveTodo todoId ->
-            ( { model | todos = removeTodo todoId model.todos }, Cmd.none )
+            let
+                newTodos : List Todo
+                newTodos =
+                    removeTodo todoId model.todos
+            in
+            ( { model | todos = newTodos }, saveTodos newTodos )
 
         StartEditingTodo todoId ->
             ( { model | editingTodo = findTodo todoId model.todos }, Cmd.none )
@@ -128,24 +156,25 @@ update msg model =
                     ( model, Cmd.none )
 
                 Just editingTodo ->
-                    ( { model
-                        | todos =
+                    let
+                        newTodos : List Todo
+                        newTodos =
                             updateTodo editingTodo.id
                                 (\_ -> editingTodo)
                                 model.todos
-                        , editingTodo = Nothing
-                      }
-                    , Cmd.none
+                    in
+                    ( { model | todos = newTodos, editingTodo = Nothing }
+                    , saveTodos newTodos
                     )
 
         ToggleAllTodos isComplete ->
-            ( { model
-                | todos =
+            let
+                newTodos : List Todo
+                newTodos =
                     List.map (\todo -> { todo | isComplete = isComplete })
                         model.todos
-              }
-            , Cmd.none
-            )
+            in
+            ( { model | todos = newTodos }, saveTodos newTodos )
 
         SetFilter filter ->
             ( { model | filter = filter }, Cmd.none )
@@ -318,7 +347,10 @@ subscriptions _ =
     Sub.none
 
 
-main : Program () Model Msg
+port saveTodos : List Todo -> Cmd msg
+
+
+main : Program Json.Value Model Msg
 main =
     Browser.element
         { init = init

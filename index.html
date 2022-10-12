@@ -10,7 +10,25 @@
     <main></main>
     <script src="build/main.js"></script>
     <script>
-      Elm.Main.init({ node: document.querySelector("main") });
+      const todosKey = "TODOS_LOCALSTORAGE_KEY";
+      const getTodos = () => {
+        try {
+          return localStorage.getItem(todosKey);
+        } catch {
+          return "[]";
+        }
+      };
+      const setTodos = (todos) => {
+        try {
+          localStorage.setItem(todosKey, JSON.stringify(todos));
+        } catch {}
+      };
+
+      const app = Elm.Main.init({
+        node: document.querySelector("main"),
+        flags: getTodos(),
+      });
+      app.ports.saveTodos.subscribe(setTodos);
     </script>
   </body>
 </html>
