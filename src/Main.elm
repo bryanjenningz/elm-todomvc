@@ -251,7 +251,8 @@ view model =
                     , placeholder "Todo text"
                     ]
                     []
-                , div [ class "w-1/4 flex" ] [ blueButton [] [ text "Add" ] ]
+                , div [ class "w-1/4 flex" ]
+                    [ blueButton [ class "grow" ] [ text "Add" ] ]
                 ]
             , div [ class "flex gap-2 justify-center" ]
                 [ viewFilter model.filter FilterAll "All"
@@ -288,7 +289,7 @@ viewFilter activeFilter filter filterText =
 blueButton : List (Attribute msg) -> List (Html msg) -> Html msg
 blueButton attributes children =
     button
-        (class "grow py-1 px-3 bg-indigo-600 rounded hover:bg-indigo-700"
+        (class "py-1 px-3 bg-indigo-600 rounded hover:bg-indigo-700"
             :: attributes
         )
         children
@@ -313,20 +314,16 @@ viewTodo maybeEditTodo todo =
                     ]
                     []
                 , div [ class "grow" ] [ text todo.text ]
-                , div []
-                    [ blueButton
-                        [ onClick (StartEditingTodo todo.id)
-                        , attribute "aria-label" "Edit"
-                        ]
-                        [ text "✎" ]
+                , blueButton
+                    [ onClick (StartEditingTodo todo.id)
+                    , attribute "aria-label" "Edit"
                     ]
-                , div []
-                    [ blueButton
-                        [ onClick (RemoveTodo todo.id)
-                        , attribute "aria-label" "Remove"
-                        ]
-                        [ text "x" ]
+                    [ text "✎" ]
+                , blueButton
+                    [ onClick (RemoveTodo todo.id)
+                    , attribute "aria-label" "Remove"
                     ]
+                    [ text "x" ]
                 ]
     in
     case maybeEditTodo of
@@ -342,8 +339,8 @@ viewTodo maybeEditTodo todo =
                         , onInput SetEditingTodoText
                         ]
                         []
-                    , div [] [ blueButton [ onClick SaveEditingTodo ] [ text "Save" ] ]
-                    , div [] [ blueButton [ onClick CancelEditingTodo ] [ text "Cancel" ] ]
+                    , blueButton [ onClick SaveEditingTodo ] [ text "Save" ]
+                    , blueButton [ onClick CancelEditingTodo ] [ text "Cancel" ]
                     ]
 
             else
