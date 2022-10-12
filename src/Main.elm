@@ -251,7 +251,7 @@ view model =
                     , placeholder "Todo text"
                     ]
                     []
-                , div [ class "w-1/4 flex" ] [ viewButton [] [ text "Add" ] ]
+                , div [ class "w-1/4 flex" ] [ blueButton [] [ text "Add" ] ]
                 ]
             , div [ class "flex gap-2 justify-center" ]
                 [ viewFilter model.filter FilterAll "All"
@@ -285,8 +285,8 @@ viewFilter activeFilter filter filterText =
         [ text filterText ]
 
 
-viewButton : List (Attribute msg) -> List (Html msg) -> Html msg
-viewButton attributes children =
+blueButton : List (Attribute msg) -> List (Html msg) -> Html msg
+blueButton attributes children =
     button
         (class "grow py-1 px-3 bg-indigo-600 rounded hover:bg-indigo-700"
             :: attributes
@@ -314,14 +314,14 @@ viewTodo maybeEditTodo todo =
                     []
                 , div [ class "grow" ] [ text todo.text ]
                 , div []
-                    [ viewButton
+                    [ blueButton
                         [ onClick (StartEditingTodo todo.id)
                         , attribute "aria-label" "Edit"
                         ]
                         [ text "✎" ]
                     ]
                 , div []
-                    [ viewButton
+                    [ blueButton
                         [ onClick (RemoveTodo todo.id)
                         , attribute "aria-label" "Remove"
                         ]
@@ -342,8 +342,8 @@ viewTodo maybeEditTodo todo =
                         , onInput SetEditingTodoText
                         ]
                         []
-                    , div [] [ viewButton [ onClick SaveEditingTodo ] [ text "Save" ] ]
-                    , div [] [ viewButton [ onClick CancelEditingTodo ] [ text "Cancel" ] ]
+                    , div [] [ blueButton [ onClick SaveEditingTodo ] [ text "Save" ] ]
+                    , div [] [ blueButton [ onClick CancelEditingTodo ] [ text "Cancel" ] ]
                     ]
 
             else
