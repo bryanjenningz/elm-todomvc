@@ -1,8 +1,8 @@
 port module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, form, input, label, span, text)
-import Html.Attributes exposing (checked, class, classList, placeholder, type_, value)
+import Html exposing (Attribute, Html, button, div, form, input, label, span, text)
+import Html.Attributes exposing (attribute, checked, class, classList, placeholder, type_, value)
 import Html.Events exposing (onCheck, onClick, onInput, onSubmit)
 import Json.Decode as Json exposing (Decoder)
 import Random
@@ -62,8 +62,7 @@ init jsonValue =
 
 
 type Msg
-    = NoOp
-    | SetNewTodoText String
+    = SetNewTodoText String
     | SetNewTodoId Id
     | AddNewTodo
     | ToggleTodo Id Bool
@@ -79,9 +78,6 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
-
         SetNewTodoText newTodoText ->
             ( { model | newTodoText = newTodoText }, Cmd.none )
 
@@ -255,7 +251,7 @@ view model =
                     , placeholder "Todo text"
                     ]
                     []
-                , div [ class "w-1/4 flex" ] [ viewButton NoOp "Add" ]
+                , div [ class "w-1/4 flex" ] [ viewButton [] [ text "Add" ] ]
                 ]
             , div [ class "flex gap-2 justify-center" ]
                 [ viewFilter model.filter FilterAll "All"
@@ -289,13 +285,13 @@ viewFilter activeFilter filter filterText =
         [ text filterText ]
 
 
-viewButton : msg -> String -> Html msg
-viewButton onClickMsg buttonText =
+viewButton : List (Attribute msg) -> List (Html msg) -> Html msg
+viewButton attributes children =
     button
-        [ class "grow py-1 px-3 bg-indigo-600 rounded hover:bg-indigo-700"
-        , onClick onClickMsg
-        ]
-        [ text buttonText ]
+        (class "grow py-1 px-3 bg-indigo-600 rounded hover:bg-indigo-700"
+            :: attributes
+        )
+        children
 
 
 viewTodos : Maybe Todo -> List Todo -> Html Msg
@@ -317,8 +313,20 @@ viewTodo maybeEditTodo todo =
                     ]
                     []
                 , div [ class "grow" ] [ text todo.text ]
-                , div [] [ viewButton (StartEditingTodo todo.id) "✎" ]
-                , div [] [ viewButton (RemoveTodo todo.id) "x" ]
+                , div []
+                    [ viewButton
+                        [ onClick (StartEditingTodo todo.id)
+                        , attribute "aria-label" "Edit"
+                        ]
+                        [ text "✎" ]
+                    ]
+                , div []
+                    [ viewButton
+                        [ onClick (RemoveTodo todo.id)
+                        , attribute "aria-label" "Remove"
+                        ]
+                        [ text "x" ]
+                    ]
                 ]
     in
     case maybeEditTodo of
@@ -334,8 +342,8 @@ viewTodo maybeEditTodo todo =
                         , onInput SetEditingTodoText
                         ]
                         []
-                    , div [] [ viewButton SaveEditingTodo "Save" ]
-                    , div [] [ viewButton CancelEditingTodo "Cancel" ]
+                    , div [] [ viewButton [ onClick SaveEditingTodo ] [ text "Save" ] ]
+                    , div [] [ viewButton [ onClick CancelEditingTodo ] [ text "Cancel" ] ]
                     ]
 
             else
