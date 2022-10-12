@@ -208,10 +208,10 @@ view model =
                 )
                 model.todos
     in
-    div [ class "min-h-screen bg-black text-white" ]
+    div [ class "min-h-screen bg-black text-white p-3" ]
         [ div
             [ class "container mx-auto" ]
-            [ div [ class "flex w-full md:w-2/3 mx-auto" ]
+            [ div [ class "flex w-full md:w-2/3 mx-auto mb-3" ]
                 [ input
                     [ class "text-black px-2 grow"
                     , onInput SetNewTodoText
