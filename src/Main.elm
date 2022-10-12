@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Html exposing (Html, button, div, input, label, span, text)
-import Html.Attributes exposing (checked, class, placeholder, type_, value)
+import Html.Attributes exposing (checked, class, classList, placeholder, type_, value)
 import Html.Events exposing (onCheck, onClick, onInput)
 import Random
 
@@ -211,7 +211,7 @@ view model =
     div [ class "min-h-screen bg-black text-white p-3" ]
         [ div
             [ class "container mx-auto" ]
-            [ div [ class "flex w-full md:w-2/3 mx-auto mb-3" ]
+            [ div [ class "flex max-w-xl md:w-2/3 mx-auto mb-3" ]
                 [ input
                     [ class "grow p-1 px-2 bg-gray-800 rounded"
                     , onInput SetNewTodoText
@@ -219,17 +219,16 @@ view model =
                     , placeholder "Todo text"
                     ]
                     []
-                , viewButton AddNewTodo "Add todo"
+                , div [ class "w-1/4 flex" ] [ viewButton AddNewTodo "Add" ]
                 ]
             , div [ class "flex gap-2 justify-center" ]
                 [ viewFilter model.filter FilterAll "All"
                 , viewFilter model.filter FilterIncomplete "Incomplete"
                 , viewFilter model.filter FilterComplete "Complete"
                 ]
-            , label []
+            , label [ class "max-w-2xl mx-auto flex gap-3 items-center" ]
                 [ input
                     [ type_ "checkbox"
-                    , class "mr-2"
                     , checked (allTodosAreComplete model)
                     , onCheck ToggleAllTodos
                     ]
@@ -244,11 +243,10 @@ view model =
 viewFilter : Filter -> Filter -> String -> Html Msg
 viewFilter activeFilter filter filterText =
     button
-        [ if filter == activeFilter then
-            class "text-cyan-400"
-
-          else
-            class ""
+        [ classList
+            [ ( "text-cyan-400", filter == activeFilter )
+            ]
+        , class "px-3 py-2 hover:bg-gray-800 rounded"
         , onClick (SetFilter filter)
         ]
         [ text filterText ]
@@ -265,14 +263,15 @@ viewButton onClickMsg buttonText =
 
 viewTodos : Maybe Todo -> List Todo -> Html Msg
 viewTodos maybeEditTodo todos =
-    div [] (List.map (viewTodo maybeEditTodo) todos)
+    div [ class "max-w-2xl mx-auto flex flex-col gap-3 mt-3" ]
+        (List.map (viewTodo maybeEditTodo) todos)
 
 
 viewTodo : Maybe Todo -> Todo -> Html Msg
 viewTodo maybeEditTodo todo =
     let
         notEditingTodo =
-            div [ class "p-2 border-2 flex gap-2 items-center" ]
+            div [ class "p-2 flex gap-2 items-center bg-gray-800" ]
                 [ input
                     [ type_ "checkbox"
                     , checked todo.isComplete
