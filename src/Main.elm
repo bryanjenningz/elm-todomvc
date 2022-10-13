@@ -2,7 +2,7 @@ port module Main exposing (main)
 
 import Browser
 import Html exposing (Attribute, Html, button, div, form, input, label, span, text)
-import Html.Attributes exposing (attribute, checked, class, classList, placeholder, type_, value)
+import Html.Attributes exposing (attribute, checked, class, classList, disabled, placeholder, type_, value)
 import Html.Events exposing (onCheck, onClick, onInput, onSubmit)
 import Json.Decode as Json exposing (Decoder)
 import Random
@@ -279,10 +279,12 @@ viewFilter : Filter -> Filter -> String -> Html Msg
 viewFilter activeFilter filter filterText =
     button
         [ classList
-            [ ( "text-cyan-400", filter == activeFilter )
+            [ ( "text-cyan-400 border-b-2 border-cyan-400", filter == activeFilter )
+            , ( "rounded hover:bg-gray-800", filter /= activeFilter )
             ]
-        , class "px-3 py-2 hover:bg-gray-800 rounded"
+        , class "px-3 py-2"
         , onClick (SetFilter filter)
+        , disabled (filter == activeFilter)
         ]
         [ text filterText ]
 
