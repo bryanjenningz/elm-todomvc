@@ -326,7 +326,7 @@ viewTodo maybeEditTodo todo =
                     [ onClick (RemoveTodo todo.id)
                     , attribute "aria-label" "Remove"
                     ]
-                    [ text "x" ]
+                    [ text "✖" ]
                 ]
     in
     case maybeEditTodo of
