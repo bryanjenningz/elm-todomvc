@@ -258,15 +258,17 @@ view model =
                 , viewFilter model.filter FilterIncomplete "Incomplete"
                 , viewFilter model.filter FilterComplete "Complete"
                 ]
-            , label [ class "max-w-2xl mx-auto flex gap-3 items-center" ]
-                [ input
-                    [ type_ "checkbox"
-                    , checked (allTodosAreComplete model)
-                    , onCheck ToggleAllTodos
-                    , class "w-5 h-5"
+            , div [ class "max-w-2xl mx-auto" ]
+                [ label [ class "inline-flex gap-3 items-center" ]
+                    [ input
+                        [ type_ "checkbox"
+                        , checked (allTodosAreComplete model)
+                        , onCheck ToggleAllTodos
+                        , class "w-5 h-5"
+                        ]
+                        []
+                    , span [] [ text "Check all" ]
                     ]
-                    []
-                , span [] [ text "Check all" ]
                 ]
             , viewTodos model.editingTodo filteredTodos
             ]
