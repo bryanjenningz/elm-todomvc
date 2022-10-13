@@ -2,10 +2,12 @@ port module Main exposing (main)
 
 import Browser
 import Html exposing (Attribute, Html, button, div, form, input, label, span, text)
-import Html.Attributes exposing (attribute, checked, class, classList, disabled, placeholder, type_, value)
+import Html.Attributes exposing (attribute, checked, class, classList, disabled, placeholder, style, type_, value)
 import Html.Events exposing (onCheck, onClick, onInput, onSubmit)
 import Json.Decode as Json exposing (Decoder)
 import Random
+import Svg exposing (path, svg)
+import Svg.Attributes exposing (d, viewBox)
 
 
 type alias Model =
@@ -321,12 +323,12 @@ viewTodo maybeEditTodo todo =
                     [ onClick (StartEditingTodo todo.id)
                     , attribute "aria-label" "Edit"
                     ]
-                    [ text "✎" ]
+                    [ editIcon ]
                 , blueButton
                     [ onClick (RemoveTodo todo.id)
                     , attribute "aria-label" "Remove"
                     ]
-                    [ text "✖" ]
+                    [ removeIcon ]
                 ]
     in
     case maybeEditTodo of
@@ -342,12 +344,51 @@ viewTodo maybeEditTodo todo =
                         , onInput SetEditingTodoText
                         ]
                         []
-                    , blueButton [ onClick SaveEditingTodo ] [ text "Save" ]
-                    , blueButton [ onClick CancelEditingTodo ] [ text "Cancel" ]
+                    , blueButton
+                        [ onClick SaveEditingTodo
+                        , attribute "aria-label" "Save"
+                        ]
+                        [ saveIcon ]
+                    , blueButton
+                        [ onClick CancelEditingTodo
+                        , attribute "aria-label" "Cancel"
+                        ]
+                        [ cancelIcon ]
                     ]
 
             else
                 notEditingTodo
+
+
+svgIcon : String -> Html msg
+svgIcon pathAttribute =
+    svg
+        [ attribute "aria-hidden" "true"
+        , viewBox "0 0 24 24"
+        , style "height" "24px"
+        , style "fill" "currentColor"
+        ]
+        [ path [ d pathAttribute ] [] ]
+
+
+saveIcon : Html msg
+saveIcon =
+    svgIcon "M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"
+
+
+editIcon : Html msg
+editIcon =
+    svgIcon "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+
+
+removeIcon : Html msg
+removeIcon =
+    svgIcon "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+
+
+cancelIcon : Html msg
+cancelIcon =
+    svgIcon "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
 
 
 subscriptions : Model -> Sub Msg
