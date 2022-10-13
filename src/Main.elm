@@ -251,8 +251,7 @@ view model =
                     , placeholder "Todo text"
                     ]
                     []
-                , div [ class "w-1/4 flex" ]
-                    [ blueButton [ class "grow" ] [ text "Add" ] ]
+                , blueButton [ class "w-1/4" ] [ text "Add" ]
                 ]
             , div [ class "flex gap-2 justify-center" ]
                 [ viewFilter model.filter FilterAll "All"
