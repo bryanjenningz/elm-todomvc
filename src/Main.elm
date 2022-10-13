@@ -253,12 +253,12 @@ view model =
                     []
                 , blueButton [ class "w-1/4" ] [ text "Add" ]
                 ]
-            , div [ class "flex gap-2 justify-center" ]
+            , div [ class "flex gap-2 justify-center mb-3" ]
                 [ viewFilter model.filter FilterAll "All"
                 , viewFilter model.filter FilterIncomplete "Incomplete"
                 , viewFilter model.filter FilterComplete "Complete"
                 ]
-            , div [ class "max-w-2xl mx-auto" ]
+            , div [ class "max-w-2xl mx-auto mb-3" ]
                 [ label [ class "inline-flex gap-3 items-center" ]
                     [ input
                         [ type_ "checkbox"
@@ -300,7 +300,7 @@ blueButton attributes children =
 
 viewTodos : Maybe Todo -> List Todo -> Html Msg
 viewTodos maybeEditTodo todos =
-    div [ class "max-w-2xl mx-auto flex flex-col gap-3 mt-3" ]
+    div [ class "max-w-2xl mx-auto flex flex-col gap-3" ]
         (List.map (viewTodo maybeEditTodo) todos)
 
 
