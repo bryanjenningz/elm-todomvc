@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Elm TodoMVC</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <main></main>
+    <script src="build/main.js"></script>
+    <script>
+      const todosKey = "TODOS_LOCALSTORAGE_KEY";
+      const getTodos = () => {
+        try {
+          return localStorage.getItem(todosKey);
+        } catch {
+          return "[]";
+        }
+      };
+      const setTodos = (todos) => {
+        try {
+          localStorage.setItem(todosKey, JSON.stringify(todos));
+        } catch {}
+      };
+
+      const app = Elm.Main.init({
+        node: document.querySelector("main"),
+        flags: getTodos(),
+      });
+      app.ports.saveTodos.subscribe(setTodos);
+    </script>
+  </body>
+</html>
